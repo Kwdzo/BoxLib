@@ -14,7 +14,7 @@ public class Scheduling {
     static List<ScheduleAction> tempActions = Lists.newArrayList();
     static List<ScheduleAction> finishedActions = Lists.newArrayList();
 
-    static bool inTick = false;
+    static boolean inTick = false;
 
     /**
      * Schedules an action to be executed immediately.
