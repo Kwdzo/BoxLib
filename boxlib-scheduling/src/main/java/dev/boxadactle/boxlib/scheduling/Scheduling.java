@@ -11,7 +11,10 @@ import java.util.List;
 public class Scheduling {
 
     static List<ScheduleAction> actions = Lists.newArrayList();
+    static List<ScheduleAction> tempActions = Lists.newArrayList();
     static List<ScheduleAction> finishedActions = Lists.newArrayList();
+
+    static bool inTick = false;
 
     /**
      * Schedules an action to be executed immediately.
@@ -19,7 +22,12 @@ public class Scheduling {
      * @param action the action to be scheduled
      */
     public static void schedule(ScheduleAction action) {
-        actions.add(action);
+        if(inTick) {
+            tempActions.add(action);
+        }
+        else {
+            actions.add(action);
+        }
     }
 
     /**
@@ -42,7 +50,7 @@ public class Scheduling {
             }
         };
 
-        actions.add(action);
+        schedule(action);
 
         return action;
     }
@@ -72,6 +80,8 @@ public class Scheduling {
     public static void tick() {
         if (actions.isEmpty()) return;
 
+        inTick = true;
+        
         actions.forEach(a -> {
             if (a.tick()) finishedActions.add(a);
         });
@@ -80,6 +90,11 @@ public class Scheduling {
         finishedActions.forEach(completed -> actions.remove(completed));
 
         finishedActions.clear();
+        inTick = false;
+        if(!tempActions.isEmpty()) {
+            actions.addAll(tempActions);
+            tempActions.clear();
+        }
     }
 
 }
